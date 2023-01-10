@@ -32,7 +32,7 @@ async function allUser(req, res, next) {
 
 // register logic 
 async function registerUser(req, res, next) {
-   const errors = validationResult(req);
+    const errors = validationResult(req);
     console.log(errors.errors);
     if (errors.errors.length) {
         return res.status(422).json({
@@ -40,20 +40,20 @@ async function registerUser(req, res, next) {
         });
 
     } else {
-       
+
     }
     const {
         email,
         username,
         password } = req.body;
-        
-      let hashPassword =await bcrypt.hash(password,10)  
-     let newUser =await new  userModel({
+
+    let hashPassword = await bcrypt.hash(password, 10)
+    let newUser = await new userModel({
         email,
         username,
-        password :hashPassword,
-    }).save();  
-   // await newUser  
+        password: hashPassword,
+    }).save();
+    // await newUser  
     // user.push({
     //     email,
     //     username,
@@ -65,7 +65,7 @@ async function registerUser(req, res, next) {
 };
 
 
-// createrUser logic 
+// createrUser function logic 
 async function createrUser(req, res, next) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -90,17 +90,44 @@ async function createrUser(req, res, next) {
     // })
     // status code maintain
     return res.status(201).json(
-       newUser
+        newUser
     );
 };
 
 
-// get user
+// login user function logic
+async function loginUser(req, res, next) {
+    // console.log(req.body.email);
+    // console.log(req.params.id);
+
+    email = req.body.email;
+    password = req.body.password;
+
+    //let result = user.find(u => u.email === email);
+    let user = await userModel.findOne({
+        email,
+    }).exec();
+    if (user) {
+        // console.log(user);
+        return res.json(user).status(200);
+
+    }
+    //  else{
+    //     //return res.json("User not log in ").status(400);
+
+    //  }
+}
+
+
+
 function getUser(req, res, next) {
     email = req.params.email;
     let result = user.find(u => u.email === email);
     return res.json(result).status(200);
 }
+
+
+
 // delete user
 function deleteUserByemail(req, res, next) {
     email = req.params.email;
@@ -111,7 +138,10 @@ function deleteUserByemail(req, res, next) {
 
 // exporting 
 exports.createrUser = createrUser;
+
 exports.registerUser = registerUser;
+exports.loginUser = loginUser;
+
 exports.allUser = allUser;
 exports.getUser = getUser;
 exports.deleteUserByemail = deleteUserByemail;

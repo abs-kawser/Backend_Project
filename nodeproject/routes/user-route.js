@@ -71,6 +71,30 @@ router.post('/register',
 );
 
 
+// login 
+router.post('/login',
+    [
+        body('email')
+        .normalizeEmail()
+        .notEmpty().withMessage('email is empty')
+        .isEmail().withMessage('not of email type')
+        .custom(async (value) => {
+            let user = await userModel.findOne({
+                email: value
+            })
+            if (!user) {
+                return Promise.reject('there is no user found');
+            }
+        }).withMessage('there is no user found'),
+
+        body('password')
+        .not().isEmpty().withMessage('password is required')
+        .isLength({
+            min: 4,
+        }).withMessage('min length 4'),
+    ],
+    userController.loginUser
+);
 
 
 

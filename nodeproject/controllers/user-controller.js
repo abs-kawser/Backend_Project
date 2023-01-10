@@ -109,13 +109,48 @@ async function loginUser(req, res, next) {
     }).exec();
     if (user) {
         // console.log(user);
-        return res.json(user).status(200);
+
+        let chekPass = await bcrypt.compare(password, user.password);
+        if (chekPass) {
+            const {
+                email,
+                username,
+                phone,
+                role,
+                _id,
+            } = user;
+
+            // let token = await jwt.sign({
+            //     email,
+            //     username,
+            //     _id
+            // }, 'do_not_share');
+
+            return res.status(200).json({
+                email,
+                username,
+                role,
+                phone,
+                //token
+            });
+        }
+        else {
+            let errors = {
+                errors: [{
+                    param: 'password',
+                    msg: 'password incorrect'
+                }],
+                msg: 'validation error'
+            };
+
+            return res.status(422).json(errors);
+        }
+    }
+
+    else {
+        return res.json("User not log in").status(400);
 
     }
-    //  else{
-    //     //return res.json("User not log in ").status(400);
-
-    //  }
 }
 
 

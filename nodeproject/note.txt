@@ -5,6 +5,6 @@
 4:check post create api 
 5:finally check in  database 
 
- 46 : user registration, validation, password hashing 
+ 46 : user registration, validation, password hashing ,change 
       
    

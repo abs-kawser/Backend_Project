@@ -1,0 +1,10 @@
+45 no video :
+1: first install mongosse 
+2: then create a model .
+3:define schema and export to controller .also use async await 
+4:check post create api 
+5:finally check in  database 
+
+ 46 : user registration, validation, password hashing 
+      
+   

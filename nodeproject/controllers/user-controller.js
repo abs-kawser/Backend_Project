@@ -1,6 +1,8 @@
 const { body, validationResult } = require('express-validator');
 const userModel = require("../Models/userModel");
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
 
 let user = [{
     email: "user1@sm.com",
@@ -99,7 +101,6 @@ async function createrUser(req, res, next) {
 async function loginUser(req, res, next) {
     // console.log(req.body.email);
     // console.log(req.params.id);
-
     email = req.body.email;
     password = req.body.password;
 
@@ -108,10 +109,11 @@ async function loginUser(req, res, next) {
         email,
     }).exec();
     if (user) {
-        // console.log(user);
+         //console.log(user);
 
         let chekPass = await bcrypt.compare(password, user.password);
         if (chekPass) {
+            
             const {
                 email,
                 username,
@@ -119,21 +121,22 @@ async function loginUser(req, res, next) {
                 role,
                 _id,
             } = user;
-
-            // let token = await jwt.sign({
-            //     email,
-            //     username,
-            //     _id
-            // }, 'do_not_share');
+// jwt part 
+            let token = await jwt.sign({
+                email,
+                username,
+                _id
+            }, 'do_not_share');
 
             return res.status(200).json({
                 email,
                 username,
                 role,
                 phone,
-                //token
+                token
             });
         }
+        
         else {
             let errors = {
                 errors: [{

@@ -4,8 +4,9 @@ const router = express.Router();
 //for validation
 const userController = require('../controllers/user-controller')
 const { body, check } = require('express-validator');
-const userModel = require('../Models/userModel')
-router.get("/all", userController.allUser);
+const userModel = require('../Models/userModel');
+const middleWare = require("../middleware/middleware");
+
 
 router.post("/creates",
   [// username must be an email
@@ -102,6 +103,11 @@ router.post('/login',
 // router.get("/get/:email", (req, res) => {
 //   res.json("user email get!");
 // });
+
+router.use(middleWare);
+
+router.get("/all", userController.allUser);
+
 
 router.get("/get/:email", userController.getUser);
 

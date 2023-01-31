@@ -101,19 +101,20 @@ async function createrUser(req, res, next) {
 async function loginUser(req, res, next) {
     // console.log(req.body.email);
     // console.log(req.params.id);
-    email = req.body.email;
-    password = req.body.password;
+    console.log(req.body);
+    let email = req.body.email;
+    let password = req.body.password;
 
     //let result = user.find(u => u.email === email);
     let user = await userModel.findOne({
         email,
     }).exec();
     if (user) {
-         //console.log(user);
+        //console.log(user);
 
         let chekPass = await bcrypt.compare(password, user.password);
         if (chekPass) {
-            
+
             const {
                 email,
                 username,
@@ -121,7 +122,7 @@ async function loginUser(req, res, next) {
                 role,
                 _id,
             } = user;
-// jwt part 
+            // jwt part 
             let token = await jwt.sign({
                 email,
                 username,
@@ -136,7 +137,7 @@ async function loginUser(req, res, next) {
                 token
             });
         }
-        
+
         else {
             let errors = {
                 errors: [{
@@ -158,10 +159,12 @@ async function loginUser(req, res, next) {
 
 
 
-function getUser(req, res, next) {
-    email = req.params.email;
-    let result = user.find(u => u.email === email);
-    return res.json(result).status(200);
+async function getUser(req, res, next) {
+    id =req.params.id;
+    let user= await userModel.findById(id)
+   // email = req.params.email;
+    //let result = user.find(u => u.email === email);
+    return res.json(user).status(200);
 }
 
 

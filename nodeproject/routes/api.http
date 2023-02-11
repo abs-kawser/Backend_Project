@@ -50,6 +50,7 @@ content-type: application/json
     "password":"123564"
  }
  
+ //http://localhost:8000/api/user/makeAdmin/63e7a56e19ae2ad378ac7642
  
  
  

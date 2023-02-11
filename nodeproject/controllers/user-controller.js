@@ -2,7 +2,7 @@ const { body, validationResult } = require('express-validator');
 const userModel = require("../Models/userModel");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
+const ObjectId = require('mongoose').Types.ObjectId;
 
 let user = [{
     email: "user1@sm.com",
@@ -50,19 +50,14 @@ async function registerUser(req, res, next) {
         password } = req.body;
 
     let hashPassword = await bcrypt.hash(password, 10)
+
     let newUser = await new userModel({
         email,
         username,
         password: hashPassword,
+        role: "user",
     }).save();
-    // await newUser  
-    // user.push({
-    //     email,
-    //     username,
-    //     password
-    // })
-    //res.json(req.body);
-    // status code maintain
+
     return res.status(201).json(newUser);
 };
 
@@ -85,12 +80,7 @@ async function createrUser(req, res, next) {
     })
     await newUser.save();
 
-    // user.push({
-    //     email,
-    //     username,
-    //     password
-    // })
-    // status code maintain
+
     return res.status(201).json(
         newUser
     );
@@ -111,10 +101,8 @@ async function loginUser(req, res, next) {
     }).exec();
     if (user) {
         //console.log(user);
-
         let chekPass = await bcrypt.compare(password, user.password);
         if (chekPass) {
-
             const {
                 email,
                 username,
@@ -122,7 +110,7 @@ async function loginUser(req, res, next) {
                 role,
                 _id,
             } = user;
-            // jwt part 
+            // jwt part token
             let token = await jwt.sign({
                 email,
                 username,
@@ -160,9 +148,9 @@ async function loginUser(req, res, next) {
 
 
 async function getUser(req, res, next) {
-    id =req.params.id;
-    let user= await userModel.findById(id)
-   // email = req.params.email;
+    id = req.params.id;
+    let user = await userModel.findById(id)
+    // email = req.params.email;
     //let result = user.find(u => u.email === email);
     return res.json(user).status(200);
 }
@@ -176,6 +164,18 @@ function deleteUserByemail(req, res, next) {
     user.splice(index, 1)
     return res.json(user).status(200);
 }
+// make admin 
+async function makeAdmin(req, res) {
+    const id = req.params.id
+    const toAdmin = { _id: ObjectId(id) };
+    const result = await userModel.updateOne(toAdmin, { $set: { roll: "kawser" } });
+    return res.status(200).json({ status: "make Admin succcesfully done", result });
+
+}
+
+//update
+
+
 
 // exporting 
 exports.createrUser = createrUser;
@@ -186,3 +186,5 @@ exports.loginUser = loginUser;
 exports.allUser = allUser;
 exports.getUser = getUser;
 exports.deleteUserByemail = deleteUserByemail;
+
+exports.makeAdmin = makeAdmin;

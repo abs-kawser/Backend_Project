@@ -5,7 +5,7 @@ const router = express.Router();
 const userController = require('../controllers/user-controller')
 const { body, check } = require('express-validator');
 const userModel = require('../Models/userModel');
-const middleWare = require("../middleware/middleware");
+const authMiddleWare = require("../middleware/middleware");
 
 
 router.post("/creates",
@@ -36,7 +36,11 @@ router.post('/register',
       .custom(async (value) => {
         let user = await userModel.findOne({
             email: value
+
+          
         })
+         console.log(`something need `,user.username);
+
         if (user) {
             return Promise.reject('E-mail already in use');
         }
@@ -48,8 +52,7 @@ router.post('/register',
     body('username').not().isEmpty().withMessage('username is empty'),
 
 
-
-    // password must be at least 5 chars long
+   // password must be at least 5 chars long
     body('password')
       .not().isEmpty().withMessage('password is empty ')
       .isLength
@@ -103,14 +106,17 @@ router.post('/login',
 // router.get("/get/:email", (req, res) => {
 //   res.json("user email get!");
 // });
-
-router.use(middleWare);
-
 router.get("/all", userController.allUser);
 
+router.use(authMiddleWare);
 
 router.get("/get/:email", userController.getUser);
 
+
+router.post("/makeAdmin/:id",userController.makeAdmin);
+
+
+//
 router.post("/update/:id", (req, res) => {
   res.json("Hello World!");
 });

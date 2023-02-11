@@ -18,6 +18,11 @@ const userSehema=({
         default:'',
         require:true,
         type:'string',
+
+    },
+    roll:{
+        type:String,
+        default:"user",
     },
 
 
